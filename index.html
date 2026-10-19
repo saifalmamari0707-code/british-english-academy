@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>British English Academy</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#17243a}
+header{background:#102b46;color:white;padding:28px 18px;text-align:center}
+header h1{margin:0 0 10px}
+header p{margin:0;color:#d9e7f5}
+main{max-width:850px;margin:24px auto;padding:0 15px}
+.card{background:white;padding:22px;margin-bottom:18px;border-radius:16px;box-shadow:0 4px 18px #102b4610}
+h2{color:#176b59}
+.word{font-size:30px;font-weight:bold;direction:ltr;text-align:left}
+button,select{padding:12px 16px;border:0;border-radius:10px;font-size:16px}
+button{background:#176b59;color:white;cursor:pointer;margin:5px}
+select{background:#edf2f7;max-width:100%}
+.english{direction:ltr;text-align:left;font-size:18px}
+footer{text-align:center;padding:25px;color:#65758b}
+</style>
+</head>
+<body>
+<header>
+<h1>British English Academy 🇬🇧</h1>
+<p>تعلم الإنجليزية البريطانية من الصفر إلى الاحتراف</p>
+</header>
+<main>
+<section class="card">
+<h2>مرحباً بك! Welcome</h2>
+<p>تعلم كلمات جديدة، استمع إلى النطق البريطاني، واختبر معلوماتك كل يوم.</p>
+<label for="level">اختر مستواك:</label>
+<select id="level" onchange="changeLevel()">
+<option value="beginner">مبتدئ Beginner</option>
+<option value="intermediate">متوسط Intermediate</option>
+<option value="advanced">متقدم Advanced</option>
+</select>
+<p id="levelText">سنبدأ بالكلمات والجمل الأساسية.</p>
+</section>
+<section class="card">
+<h2>الدرس الأول: التحيات Greetings</h2>
+<div class="word" id="word">Hello</div>
+<p id="translation">مرحباً</p>
+<p class="english" id="example">Hello, how are you?</p>
+<button onclick="speak()">🔊 استمع للنطق البريطاني</button>
+<button onclick="nextWord()">الكلمة التالية ←</button>
+</section>
+<section class="card">
+<h2>اختبر نفسك 📝</h2>
+<p>ما معنى كلمة <strong class="english">Thank you</strong>؟</p>
+<button onclick="answer(false)">من فضلك</button>
+<button onclick="answer(true)">شكراً</button>
+<button onclick="answer(false)">إلى اللقاء</button>
+<p id="result" aria-live="polite"></p>
+</section>
+<section class="card">
+<h2>خطة تعلمك</h2>
+<p>ابدأ بدرس اليوم، وتدرّب على الاستماع والقراءة كل يوم.</p>
+<p id="progress">إنجازك في الاختبار: لم تبدأ بعد</p>
+</section>
+</main>
+<footer>British English Academy · تعلم كل يوم خطوة جديدة</footer>
+<script>
+const words=[
+{en:"Hello",ar:"مرحباً",ex:"Hello, how are you?"},
+{en:"Thank you",ar:"شكراً لك",ex:"Thank you very much."},
+{en:"Good morning",ar:"صباح الخير",ex:"Good morning, everyone."},
+{en:"Please",ar:"من فضلك",ex:"Can I have some water, please?"},
+{en:"Goodbye",ar:"إلى اللقاء",ex:"Goodbye, see you tomorrow."}
+];
+let index=0,done=false;
+function nextWord(){
+index=(index+1)%words.length;
+document.getElementById("word").textContent=words[index].en;
+document.getElementById("translation").textContent=words[index].ar;
+document.getElementById("example").textContent=words[index].ex;
+}
+function speak(){
+if(!("speechSynthesis" in window)){
+alert("ميزة النطق غير مدعومة في هذا المتصفح.");
+return;
+}
+speechSynthesis.cancel();
+const utterance=new SpeechSynthesisUtterance(words[index].en+". "+words[index].ex);
+utterance.lang="en-GB";
+utterance.rate=0.8;
+const voices=speechSynthesis.getVoices();
+const british=voices.find(v=>v.lang==="en-GB");
+if(british)utterance.voice=british;
+speechSynthesis.speak(utterance);
+}
+function answer(correct){
+document.getElementById("result").textContent=correct?"أحسنت! إجابة صحيحة 🎉":"حاول مرة أخرى، يمكنك ذلك!";
+document.getElementById("progress").textContent=correct?"إنجازك في الاختبار: إجابة صحيحة":"إنجازك في الاختبار: حاول مجدداً";
+done=true;
+}
+function changeLevel(){
+const level=document.getElementById("level").value;
+const messages={
+beginner:"سنبدأ بالكلمات والجمل الأساسية.",
+intermediate:"سنركز على المحادثات والقواعد اليومية.",
+advanced:"سنركز على التعبير المتقدم والقراءة والكتابة."
+};
+document.getElementById("levelText").textContent=messages[level];
+}
+</script>
+</body>
+</html>
